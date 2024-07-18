@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -24,9 +23,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install -g make
+        run: npm install
 
       - name: Setup project
         run: make setup
@@ -36,3 +33,9 @@ jobs:
 
       - name: Run linter
         run: make lint
+
+      - name: Check for vulnerabilities with Snyk
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: npx snyk test --all-projects
+        if: success()  # Execute only if previous steps are successful
